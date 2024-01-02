@@ -35,6 +35,14 @@ const examples = [
     name: "Tenor",
     href: "/memes/tenor",
   },
+  {
+    name: "API",
+    href: "/dev/api",
+  },
+  {
+    name: "Scripts",
+    href: "/dev/scripts",
+  },
 ]
 
 interface ExamplesNavProps extends React.HTMLAttributes<HTMLDivElement> {}

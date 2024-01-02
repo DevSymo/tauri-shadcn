@@ -1,5 +1,5 @@
-import TenorPage from "@/app/memes/tenor/page";
+import ApiPage from "@/app/memes/tenor/page";
 
 export default function App() {
-  return <TenorPage />
+  return <ApiPage />
 }
