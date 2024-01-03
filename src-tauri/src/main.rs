@@ -5,14 +5,16 @@
 )]
 
 mod dto;
-mod client;
-mod dotenv_file;
+/*mod client;
+mod dotenv_file;*/
+mod api;
 
-use client::tenor_client::tenor_call;
+/*use client::tenor_client::tenor_call;
 use client::get_github_latest_tag_client::github_latest_tag_client;
 use client::giphy_client::giphy_call;
 use dotenv_file::make_dotenv::check_or_create_dotenv;
-use dotenv::dotenv;
+use dotenv::dotenv;*/
+use api::api_module::*;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -22,16 +24,10 @@ fn greet(name: &str) -> String {
 
 #[tokio::main]
 async fn main() {
-    dotenv().ok();
+    //dotenv().ok();
 
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![
-            greet,
-            check_or_create_dotenv,
-            tenor_call,
-            github_latest_tag_client,
-            giphy_call
-        ])
+        .invoke_handler(tauri::generate_handler![get_request])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

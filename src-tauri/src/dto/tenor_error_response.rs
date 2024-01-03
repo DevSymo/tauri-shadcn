@@ -1,8 +1,8 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct TenorError {
-    pub error: Error
+    pub error: Error,
 }
 
 #[derive(Serialize, Deserialize)]

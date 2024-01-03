@@ -1,18 +1,18 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct GiphyResults {
-    pub data: Vec<Data>
+    pub data: Vec<Data>,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct Data {
-    pub images: Images
+    pub images: Images,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct Images {
-    pub fixed_width: FixedWidth
+    pub fixed_width: FixedWidth,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -20,5 +20,5 @@ pub struct FixedWidth {
     pub height: String,
     pub width: String,
     pub size: String,
-    pub url: String
+    pub url: String,
 }

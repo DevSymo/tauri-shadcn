@@ -32,10 +32,6 @@ const examples = [
     href: "/examples/authentication",
   },
   {
-    name: "Tenor",
-    href: "/memes/tenor",
-  },
-  {
     name: "API",
     href: "/dev/api",
   },
@@ -48,7 +44,7 @@ const examples = [
 interface ExamplesNavProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function ExamplesNav({ className, ...props }: ExamplesNavProps) {
-  const pathname = usePathname() === "/" ? "/memes/tenor" : usePathname()
+  const pathname = usePathname() === "/" ? "/dev/api" : usePathname()
 
   return (
     <MenubarMenu>
