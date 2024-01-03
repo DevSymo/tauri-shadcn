@@ -8,37 +8,45 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 
 
-import { AlbumArtwork } from "./components/album-artwork"
-import { Menu } from "./components/menu"
-import { PodcastEmptyPlaceholder } from "./components/podcast-empty-placeholder"
 import { Sidebar } from "./components/sidebar"
 import { listenNowAlbums, madeForYouAlbums } from "./data/albums"
 import { playlists } from "./data/playlists"
 import "./styles.css"
 import Image from "next/image"
 import { PlusCircle } from "lucide-react"
+import { GearIcon } from '@radix-ui/react-icons';
+import { CodeViewer } from './components/code-viewer';
 
 
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 
 export default function ApiPage() {
   const [getUrl, setGetUrl] = useState('');
   const [getResponse, setGetResponse] = useState('');
-  const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
   const [useHeaders, setUseHeaders] = useState(false);
   const [headers, setHeaders] = useState([{ key: '', value: '' }]);
 
   type RequestOptions = {
     url: string;
     headers?: Record<string, string>;
+  };
+
+  const handleSwitchChange = (newCheckedState) => {
+    setUseHeaders(newCheckedState);
   };
   
   const handleGetRequest = async () => {
@@ -65,7 +73,6 @@ export default function ApiPage() {
     }
   };
   
-  
   const handleHeaderChange = (index, key, value) => {
     const updatedHeaders = headers.map((header, i) => 
       i === index ? { key, value } : header
@@ -78,6 +85,8 @@ export default function ApiPage() {
       setHeaders(updatedHeaders);
     }
   };
+
+  const formattedResponse = getResponse ? JSON.stringify(JSON.parse(getResponse), null, 2) : '';
   
 
   return (
@@ -91,19 +100,60 @@ export default function ApiPage() {
               <Tabs defaultValue="music" className="h-full space-y-6">
                 <div className="space-between flex items-center">
                   <TabsList>
-                    <TabsTrigger value="music" className="relative">
-                      Music
-                    </TabsTrigger>
-                    <TabsTrigger value="podcasts">Podcasts</TabsTrigger>
-                    <TabsTrigger value="live" disabled>
-                      Live
-                    </TabsTrigger>
+                    <TabsTrigger value="music" className="relative">GET</TabsTrigger>
+                    <TabsTrigger value="podcasts">POST</TabsTrigger>
                   </TabsList>
                   <div className="ml-auto mr-4">
-                    <Button>
-                      <PlusCircle className="mr-2 h-4 w-4" />
-                      Add music
-                    </Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button>
+                        <GearIcon className="mr-2 h-4 w-4" />
+                        Options
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Advanced Options</DialogTitle>
+                        <DialogDescription>
+                          Adjust Queries, Params and Headers here.
+                        </DialogDescription>
+                      </DialogHeader>
+                        <div>
+                            <div className="flex items-center space-x-2">
+                              <Switch
+                                checked={useHeaders}
+                                onCheckedChange={handleSwitchChange}
+                              />
+                              <Label htmlFor="use-headers">Headers</Label>
+                            </div>
+                            {useHeaders &&
+                              headers.map((header, index) => (
+                                <div key={index} className="flex items-center space-x-2 my-2">
+                                  <Input
+                                    type="text"
+                                    value={header.key}
+                                    placeholder="Header Key"
+                                    onChange={(e) => handleHeaderChange(index, e.target.value, header.value)}
+                                    className="flex-1"
+                                  />
+                                  <span>:</span>
+                                  <Input
+                                    type="text"
+                                    value={header.value}
+                                    placeholder="Header Value"
+                                    onChange={(e) => handleHeaderChange(index, header.key, e.target.value)}
+                                    className="flex-1"
+                                  />
+                                </div>
+                              ))
+                            }
+                          </div>
+                      <DialogFooter>
+                        <Button type="submit">Save changes</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                    
                   </div>
                 </div>
                 <TabsContent
@@ -122,47 +172,14 @@ export default function ApiPage() {
                   </div>
                   <Separator className="my-4" />
                 <div className="mt-6 space-y-1">
-                  <h1 className="font-bold">GET</h1>
                   <div className="mt-6 flex space-x-1">
                     <Input id="getUrl" placeholder="Enter your GET endpoint" onChange={(e) => setGetUrl(e.target.value)}/>
                     <Button onClick={handleGetRequest}>Send</Button>
                   </div>
                   <div>
-                      <button onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}>
-                        Advanced Options
-                      </button>
-                      {showAdvancedOptions && (
-                        <div>
-                          <label>
-                            <input
-                              type="checkbox"
-                              checked={useHeaders}
-                              onChange={(e) => setUseHeaders(e.target.checked)}
-                            />
-                            Headers
-                          </label>
-                          {useHeaders &&
-                            headers.map((header, index) => (
-                              <div key={index}>
-                                <input
-                                  type="text"
-                                  value={header.key}
-                                  placeholder="Header Key"
-                                  onChange={(e) => handleHeaderChange(index, e.target.value, header.value)}
-                                />
-                                :
-                                <input
-                                  type="text"
-                                  value={header.value}
-                                  placeholder="Header Value"
-                                  onChange={(e) => handleHeaderChange(index, header.key, e.target.value)}
-                                />
-                              </div>
-                            ))}
-                        </div>
-                      )}
-                    </div>
-                  <Textarea className="w-full mt-4 p-2 border" rows={5} readOnly value={getResponse} />
+                    <Textarea className="w-full mt-4 p-2 border" rows={6} readOnly value={formattedResponse} />
+                    {/*<CodeViewer code={formattedResponse} />*/}
+                  </div>
                 </div>
               </TabsContent>
             </Tabs>
